@@ -1,0 +1,79 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookingAppionmentAppWithLocalStorage</title>
+</head>
+<body>
+    <h1>Booking Appionment App</h1>
+    <form onsubmit="saveToLocalStorage(event)">
+        <label>NAME:</label>
+            <input type="text" name="NAME" id="n1" required/>
+        <label>EMAIL ID:</label>
+            <input type="email" name="email" id="n2"  required/>
+        <label>PHONE NO.</label>
+            <input type="tel" name="phoneNo" id="n3"  />
+        <button>SUBMIT</button>
+    </form><ol id="lits"></ol>
+    <!-- <script src=""></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.3/axios.min.js">
+        </script>
+        <script>
+        function saveToLocalStorage(event){
+          event.preventDefault();
+          const name=event.target.NAME.value;
+          const emailId=event.target.email.value;
+          const phono=event.target.phoneNo.value;
+          const obj={
+            name,
+            emailId,
+            phono
+          }  
+        axios.post("https://crudcrud.com/api/ab5eea7b17184a06ba9f50c35120666f/appionmentdata", obj)
+        .then((resolve)=>{
+            // console.log(resolve) 
+            showUser(resolve.data)    
+        })
+        .catch(()=>{
+            document.body.innerHTML=document.body.innerHTML+"<h3>SOMETHING WENT WRONG<h3>";
+        })
+    }
+    function showUser(myobj){
+            const dd=document.getElementById("lits")
+            const d1=document.createElement('li');
+            const d2=document.createElement('input')
+            const d3=document.createElement('input');
+            d1.textContent=`${myobj.name}-${myobj.emailId}-${myobj.phono}`
+            d2.type="button"
+            d2.value='DELETE';
+            d3.type="button";d3.value='EDIT';
+            d2.onclick=()=>{
+                localStorage.removeItem('myobj',JSON.stringify(myobj))
+                dd.removeChild(d1);
+            }
+            d3.onclick=()=>{
+                document.getElementById('n1').value=myobj.name;
+                document.getElementById('n2').value=myobj.emailId;
+                document.getElementById('n3').value=myobj.phono
+                localStorage.removeItem('myobj',JSON.stringify(myobj))
+                dd.removeChild(d1);
+            }
+            d1.appendChild(d3)
+            d1.appendChild(d2)
+            dd.appendChild(d1);
+          }
+            window.addEventListener("DOMContentLoaded",()=>{
+              axios.get("https://crudcrud.com/api/ab5eea7b17184a06ba9f50c35120666f/appionmentdata")
+              .then((resolve)=>{
+               console.log(resolve);
+               for(var i=0;i<resolve.data.length;i++)
+               {
+                showUser(resolve.data[1])
+               }
+              })
+               .catch((err)=>document.write(err))
+            })
+    </script>
+</body>
+</html>
